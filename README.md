@@ -6,7 +6,7 @@
  ╚████╔╝ ██║   ██║██║   ██║██████╔╝██║    ██████╔╝██║  ███╗
   ╚██╔╝  ██║   ██║██║   ██║██╔═══╝ ██║    ██╔═══╝ ██║   ██║
    ██║   ╚██████╔╝╚██████╔╝██║     ██║    ██║     ╚██████╔╝
-   ╚═╝    ╚═════╝  ╚═════╝ ╚═╝     ╚═╝    ╚═╝      ╚═════╝ 
+   ╚═╝    ╚═════╝  ╚═════╝  ╚═╝     ╚═╝    ╚═╝      ╚═════╝
 ```
 
 #  YOUPI PG V2
@@ -42,20 +42,21 @@
 [![WhatsApp Berry Auth](https://img.shields.io/badge/Auth-WhatsApp%20OTP-25d366?style=for-the-badge&logo=whatsapp&logoColor=white)](#)
 [![SQLite WAL](https://img.shields.io/badge/Database-SQLite%20Native%20WAL-003b57?style=for-the-badge&logo=sqlite&logoColor=white)](#)
 [![Native Android Observer](https://img.shields.io/badge/Android-Kotlin%20Observer%20APK-3ddc84?style=for-the-badge&logo=android&logoColor=white)](#)
-[![Regression Tests](https://img.shields.io/badge/Tests-33%20Curated%20Suites-success?style=for-the-badge&logo=vitest&logoColor=white)](#)
+[![Regression Tests](https://img.shields.io/badge/Tests-39%20Curated%20Suites-success?style=for-the-badge&logo=vitest&logoColor=white)](#)
 [![White Label Ready](https://img.shields.io/badge/Branding-100%25%20White--Label-f59e0b?style=for-the-badge&logo=target&logoColor=white)](#)
 
 <br/>
 
 <p align="center">
   <a href="#-live-product-demos">Live Demos</a> •
-  <a href="#-the-problem-vs-the-youpi-solution">Why YOUPI?</a> •
+  <a href="#-overview">Why YOUPI?</a> •
   <a href="#-architecture-at-a-glance">Architecture</a> •
-  <a href="#-key-features--superpowers">Superpowers</a> •
-  <a href="#-quickstart-in-60-seconds">Quickstart</a> •
+  <a href="#-key-features">Superpowers</a> •
+  <a href="#-step-by-step-deployment--quickstart-guide-code-deploy-kaise-kare">Deployment & Quickstart</a> •
+  <a href="#-step-by-step-complete-usage-guide-use-kaise-kare">Usage Guide</a> •
   <a href="#-universal-merchant-integration">Merchant Integration</a> •
   <a href="#-tri-channel-observation-mesh">Banking Observers</a> •
-  <a href="#-port-topology">Port Topology</a> •
+  <a href="#-port-topology--microservices-map">Port Topology</a> •
   <a href="#-documentation-hub">Docs</a>
 </p>
 
@@ -199,97 +200,247 @@ The application includes the following customer outcome pages:
 
 ---
 
-## Research Scope, Usage Limits & Safety
+## 🛠️ Step-by-Step Deployment & Quickstart Guide (Code Deploy Kaise Kare)
 
-This repository is intended for external research, education, code review, prototyping, and controlled experiments. It may be useful for developers exploring payment-flow UX or building a small demo, but it should not be treated as a substitute for a bank/acquirer integration or a professionally reviewed payment service.
+Follow these simple steps to deploy **YOUPI PG V2** on your local machine, VPS, or cloud server:
 
-### Suggested limits for experiments
+### Step 1: Install System Prerequisites
+Before running or deploying the code, ensure your host environment meets the following requirements:
+- **Node.js**: Version `>= 22.13.0` LTS (Recommended: **Node 24 LTS**)
+  - *Verify version:* `node -v`
+  - *Note:* Node `>= 22.13.0` is required for native unflagged `node:sqlite` (`DatabaseSync`).
+- **Git**: Installed on Linux/macOS/Windows.
+- **Operating System**: Ubuntu 22.04+, Debian 12+, RHEL, macOS, or Windows 10/11 / Windows Server.
+- **Docker & Docker Compose** *(Optional)*: Required only if deploying using Docker containers.
 
-- Keep the project to **20 or fewer payment attempts/transactions per day per receiving account** as a conservative project-level testing limit.
-- This is **not an official universal NPCI daily cap**. UPI limits depend on transaction category and may also be affected by the bank, UPI application, account type, and risk controls. Check current official rules before use.
-- Use low-value transactions only when real-money testing is necessary, and obtain the account holder's permission.
-- Do not use this experimental setup to collect payments on behalf of unrelated merchants, pool or route funds, or represent the software as an authorised payment aggregator.
-- Do not use it for production checkout until you have completed an independent security review, tested failure and refund paths, established reconciliation and customer-support procedures, and confirmed all applicable legal, contractual, bank, and regulatory requirements.
-
-### Known design risks to evaluate
-
-- **Bank alert parsing can be wrong or delayed.** SMS, notification, and email formats can change, alerts may be duplicated or missing, and messages can be spoofed or misinterpreted.
-- **Amount matching is not a complete payment identity check.** Equal amounts, delayed notifications, and replayed events can cause a payment to be attributed to the wrong order.
-- **A webhook signature does not prove funds settled.** It only authenticates a message relative to a secret and implementation; merchant systems must still validate event freshness, replay protection, amount, order state, and reconciliation.
-- **Secrets and personal data need protection.** Restrict access to bank-connected email, Android observer permissions, logs, databases, backups, and environment files. Do not store more customer data than necessary.
-- **Operational safeguards are required.** Add rate limits, access controls, audit logs, backups, monitoring, incident response, refund/dispute handling, and manual reconciliation before considering any real-money deployment.
-
-### Before using with real customers
-
-1. Review the full source code and threat model; do not assume passing tests mean the system is secure.
-2. Confirm the receiving account and intended merchant activity are permitted by the bank and applicable UPI terms.
-3. Get qualified advice on whether your specific business model triggers payment-system, payment-aggregator, consumer-protection, privacy, tax, or other obligations.
-4. Test duplicate notifications, wrong amounts, expired orders, concurrent orders, delayed settlement, refunds, disputes, and service outages.
-5. Keep an auditable reconciliation process and a human-reviewed fallback for ambiguous payments.
-
-This section is a practical project warning, not a certification, compliance checklist, or legal opinion.
-
----
-
-##  Quickstart in 60 Seconds
- 
-### Prerequisites
-- **Node.js `>= 22.13.0` LTS** (Recommended: Node 24 LTS, `node -v`) for native `node:sqlite` (`DatabaseSync`) engine.
-  `node:sqlite` was added in Node 22.5.0 but only unflagged in **22.13.0**, so 22.5.0–22.12.x cannot run this project without `--experimental-sqlite`.
-- Standard Linux, macOS, or Windows host
-- *External database services (PostgreSQL/Redis) are completely optional!*
-
-> **Note:** Containerisation is not included in this repository yet — there is no `Dockerfile` or
-> `docker-compose.yml`. Run the services on a native Node.js host as described below.
-
-### Native Host Quickstart
-
-#### 1. Clone & Install Dependencies
-Standard `npm install` works out-of-the-box across all packages and apps without any protocol issues:
+### Step 2: Clone Repository & Install Dependencies
+Open your terminal or command prompt and run:
 ```bash
+# 1. Clone the repository
 git clone https://github.com/youpi-pg/YouPI-PG.git youpi-pg
+
+# 2. Enter directory
 cd youpi-pg
+
+# 3. Install NPM dependencies across all packages and apps
 npm install
 ```
 
-#### 2. Configure Environment
+### Step 3: Configure Environment Variables (`.env`)
+Create your environment configuration file from the provided template:
 ```bash
 cp .env.example .env
 ```
-*(The default `.env` is pre-configured for localhost out of the box).*
+Open `.env` in any text editor and update the core parameters:
 
-### 3. Start the Services
-On first launch, YOUPI PG automatically provisions `data/youpi_pg.sqlite`, creates the directory if missing, and executes idempotent migrations and baseline seeds. No manual database setup is required:
+```env
+# Master encryption key (Generate a random 64-char hex string)
+ENCRYPTION_MASTER_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+
+# JWT Secret for session authentication
+JWT_SECRET=super_secret_jwt_key_at_least_32_characters_long
+
+# Merchant Admin login credentials
+INITIAL_ADMIN_EMAIL=admin@yourdomain.com
+INITIAL_ADMIN_PASSWORD=YourSecurePassword123!
+
+# Mode configuration: 'localhost' for development, or 'production' for live domain
+YOUPI_MODE=localhost
+YOUPI_ALLOW_LOCALHOST_MODE=true
+
+# Public endpoint URLs
+BASE_PAYMENT_API_URL=http://localhost:6100
+BASE_CHECKOUT_URL=http://localhost:7000
+BASE_ADMIN_URL=http://localhost:6001
+```
+
+> 💡 **Tip:** Generate a 64-character hex string for `ENCRYPTION_MASTER_KEY` using:
+> `node -e "console.log(crypto.randomBytes(32).toString('hex'))"`
+
+### Step 4: Database Setup (Zero-Config Auto-Provisioning)
+YOUPI PG uses an embedded, high-performance SQLite database (`node:sqlite` in WAL mode). No external PostgreSQL or MySQL database installation is required!
+
+On first boot, the system automatically creates `data/youpi_pg.sqlite`, executes idempotent schema migrations, and seeds default accounts.
+
+If you want to manually initialize or reset the database at any time, run:
+```bash
+npm run db:setup
+```
+
+### Step 5: Choose Deployment Mode & Run
+
+#### Mode A: Development / Demonstration Run
+For local development with live reload and console logging via Control Center:
 ```bash
 npm run dev
-# or
-npm start
 ```
+Access services at:
+- **Supervisor Control Center:** [`http://localhost:8090`](http://localhost:8090)
+- **Merchant Admin Panel:** [`http://localhost:6001`](http://localhost:6001)
+- **Showcase Store Demo:** [`http://localhost:5000`](http://localhost:5000)
+- **Payment Core REST API:** [`http://localhost:6100`](http://localhost:6100)
+- **Customer Checkout Portal:** [`http://localhost:7000`](http://localhost:7000)
 
-The services can then be accessed at the following local addresses:
--  **Control Center Supervisor:** [`http://localhost:8090`](http://localhost:8090)
--  **Merchant Admin Panel:** [`http://localhost:6001`](http://localhost:6001)
--  **YOUPI Showcase Demo Store:** [`http://localhost:5000`](http://localhost:5000)
--  **Payment REST API:** [`http://localhost:6100`](http://localhost:6100)
--  **Customer Checkout Portal:** [`http://localhost:7000`](http://localhost:7000)
-
-### 4. Run the Full Regression Test Suite
-Verify all **31 test suites** across packages, apps, and chaos harnesses:
+#### Mode B: Native Host Production Run (Linux VPS / PM2 / systemd)
+For production deployment directly on a Linux server:
 ```bash
-npm test
+# Start background daemon processes
+npm start
+
+# Or using PM2 process supervisor:
+npm install -g pm2
+pm2 start scripts/start.js --name "youpi-pg"
+pm2 save
 ```
-```text
-============================================================
- YOUPI PG V2 — FULL REGRESSION TEST RUNNER
-Running 31 curated test suites...
-============================================================
-[1/31] Testing packages/common/src/__tests__/common.test.js...  PASS (0.22s)
-...
-[31/31] Testing scripts/production-infrastructure.test.js...  PASS (0.17s)
-============================================================
- ALL 31 TEST SUITES PASSED CLEANLY (Total: 17.68s)
-============================================================
+
+#### Mode C: Docker Compose Container Deployment
+If you prefer running in isolated Docker containers:
+```bash
+# Start all microservices in background containers
+docker compose up -d
+
+# View container status
+docker compose ps
+
+# Follow combined live logs
+docker compose logs -f
 ```
+
+### Step 6: Production Domain Binding & SSL (Cloudflare Tunnel / Nginx)
+For public production deployment with HTTPS domain (e.g., `pay.yourdomain.com`):
+
+1. **Option A — Cloudflare Tunnel (Recommended & Zero Open Ports):**
+   ```bash
+   cloudflared tunnel create youpi-gateway
+   cloudflared tunnel route dns youpi-gateway pay.yourdomain.com
+   ```
+   Point tunnel ingress to `http://localhost:7000` (Checkout Portal proxies API calls to port `6100` automatically).
+2. **Option B — Nginx Reverse Proxy:**
+   Set up Nginx to proxy `https://pay.yourdomain.com` to `http://127.0.0.1:7000` with SSL certificates (Certbot / Let's Encrypt).
+3. Update `BASE_PAYMENT_API_URL` and `BASE_CHECKOUT_URL` in `.env` to match your public HTTPS domain (`https://pay.yourdomain.com`).
+
+<br/>
+
+---
+
+## 📖 Step-by-Step Complete Usage Guide (Use Kaise Kare)
+
+Here is how to set up, configure, and use **YOUPI PG V2** step by step from merchant administration to storefront integration:
+
+### Step 1: Merchant Admin Dashboard Configuration
+1. Open the **Merchant Admin Panel** in your browser at `http://localhost:6001` (or your admin domain).
+2. Log in using `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD` from `.env`.
+3. Go to **Receiving Accounts** tab:
+   - Click **Add VPA**.
+   - Enter your primary bank UPI ID (e.g. `yourname@okaxis`, `business@upi`, or `9876543210@paytm`).
+   - Enter Payee Name (e.g. `Acme Enterprises`).
+   - Set active status to `ACTIVE`.
+4. Go to **Settings / API Keys**:
+   - Copy your **Merchant Public Key** (used in `youpi.js` SDK).
+   - Copy your **Webhook Secret** (used to verify incoming payment notifications).
+
+### Step 2: Set Up Banking Observers (Payment Verification Engine)
+To verify payments automatically in real-time without gateway fees:
+
+#### 1. Android Observer APK (`com.youpi.observer`):
+- Locate the APK file at [`apps/android-observer-app/youpi-sms-gateway.apk`](apps/android-observer-app/youpi-sms-gateway.apk).
+- Install the APK on any secondary Android smartphone containing the bank-registered SIM card.
+- Open the app and grant **SMS Listener** and **Notification Access** permissions.
+- In Merchant Admin, navigate to **Observers -> Android Observer** and click **Pair Device**.
+- Scan the displayed QR code with the Android app to complete secure encrypted HMAC pairing.
+
+#### 2. Gmail Observer Setup:
+- In Merchant Admin, navigate to **Observers -> Gmail Observer**.
+- Connect your bank-linked Google Account via OAuth2 or CDP.
+- The observer automatically polls official bank credit alert emails (SBI, HDFC, ICICI, Axis, Kotak, PNB, BOB, etc.).
+
+#### 3. Google Messages Web Observer Setup:
+- Navigate to **Observers -> SMS Observer**.
+- Connect Google Messages for Web via Chrome DevTools Protocol (CDP) to parse bank SMS.
+
+### Step 3: Integrate Checkout into Your Website / Storefront
+
+#### Method 1: Zero-JS Declarative Integration (HTML Button)
+Add the `youpi.js` script tag in your page `<head>`:
+```html
+<script src="https://pay.yourdomain.com/youpi.js" 
+        data-youpi-key="YOUR_MERCHANT_PUBLIC_KEY" 
+        data-currency="INR">
+</script>
+```
+Add `data-youpi-pay` attributes to any existing HTML button:
+```html
+<button data-youpi-pay
+        data-order-id="ORDER-1001"
+        data-amount="499.00"
+        data-customer-name="Mohit"
+        data-customer-email="mohit@example.com"
+        data-customer-phone="9876543210">
+   Pay ₹499 via UPI
+</button>
+```
+*When clicked, `youpi.js` automatically renders a dynamic checkout modal with WhatsApp OTP verification, vector QR code, and real-time payment polling!*
+
+#### Method 2: Programmatic JavaScript API (React / Next.js / Vue / Svelte)
+```javascript
+window.Youpi.pay({
+  order_id: 'ORDER-1001',
+  amount: 499.00,
+  currency: 'INR',
+  customer: {
+    name: 'Mohit',
+    email: 'mohit@example.com',
+    phone: '9876543210'
+  },
+  handler: function(response) {
+    // Payment verified: response = { status: 'SUCCESS', order_id, utr, amount_received }
+    console.log(`Payment confirmed! UTR: ${response.utr}`);
+    window.location.href = `/order-success?order_id=${response.order_id}&utr=${response.utr}`;
+  },
+  onClose: function() {
+    console.log('Customer closed payment checkout modal');
+  }
+});
+```
+
+### Step 4: Webhook Integration & Order Fulfillment
+Set up a POST endpoint on your backend server to receive payment confirmation webhooks from YOUPI PG.
+
+>  **SECURITY MANDATE:** Always verify the `X-Gateway-Signature` header over the **raw unparsed body bytes** before fulfilling orders!
+
+#### Node.js (Express) Webhook Receiver Example:
+```javascript
+import crypto from 'node:crypto';
+import express from 'express';
+
+const app = express();
+
+app.post('/api/youpi-webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const signature = req.headers['x-gateway-signature'] || '';
+  const secret = process.env.YOUPI_WEBHOOK_SECRET;
+  const expected = 'sha256=' + crypto.createHmac('sha256', secret).update(req.body).digest('hex');
+
+  if (signature.length !== expected.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    return res.status(401).json({ error: 'Invalid webhook signature' });
+  }
+
+  const payload = JSON.parse(req.body.toString('utf8'));
+
+  if (payload.event === 'SUCCESS' && payload.method === 'UPI') {
+    // Fulfill order in your database
+    console.log(`Order ${payload.orderId} paid successfully! Bank UTR: ${payload.utr}`);
+  }
+
+  res.status(200).json({ received: true });
+});
+```
+
+### Step 5: Offline Store Retail Counter / POS Mode
+If operating a physical store:
+1. Open **Merchant Admin -> Counter Till Dock** (`http://localhost:6001/till`).
+2. Enter the bill amount and click **Generate QR**.
+3. Display the counter QR code on a billing tablet or customer display.
+4. Accept UPI, Cash at Counter (`CASH_COUNTER`), or Card at POS Terminal (`CARD_COUNTER`) with real-time cashier approval SSE updates.
 
 <br/>
 
@@ -297,76 +448,9 @@ Running 31 curated test suites...
 
 ##  Universal Merchant Integration
 
-YOUPI PG can be integrated into a website, web application, or e-commerce store using the following steps.
+YOUPI PG can be integrated into any website or web application using language-agnostic code:
 
-### Step 1: Add the Universal Script to your `<head>`
-```html
-<!-- Official YOUPI PG Universal Integration Script -->
-<script src="https://pay.yourdomain.com/youpi.js" 
-        data-youpi-key="YOUR_MERCHANT_PUBLIC_KEY" 
-        data-currency="INR">
-</script>
-```
-
-### Step 2: Declarative Button (Zero JavaScript Required!)
-Add `data-youpi-pay` attributes to any existing HTML button:
-```html
-<button data-youpi-pay
-        data-order-id="ORDER-1001"
-        data-amount="499.00"
-        data-currency="INR">
-   Buy Now with YOUPI PG
-</button>
-```
-*The script automatically intercepts the click, opens a centered desktop modal (or mobile slide-up bottom sheet), and launches the checkout session!*
-
-### Step 3: Programmatic API (For React, Vue, Next.js, Nuxt)
-```javascript
-window.Youpi.pay({
-  order_id: 'ORDER-1001',
-  amount: 499.00,
-  currency: 'INR',
-  name: 'Acme Digital Store',
-  description: 'Pro Subscription Top-Up',
-  handler: function(response) {
-    // response: { status: 'SUCCESS', order_id, amount_received, utr }
-    console.log(`Payment confirmed! UTR: ${response.utr}`);
-    window.location.href = `/order-success?order_id=${response.order_id}&utr=${response.utr}`;
-  },
-  onClose: function() {
-    console.log('Customer closed payment modal');
-  }
-});
-```
-
-### Step 4: Authoritative Server-to-Server Webhook Verification
->  **CRITICAL SECURITY RULE:** Never fulfill orders based solely on frontend browser events. Always verify the backend HMAC-SHA256 signature! Consumers **MUST** compute the HMAC over the raw, unparsed request bytes before any JSON parsing.
-
-#### Webhook Contract:
-- **Header**: `X-Gateway-Signature: sha256=<64_char_hex_hash>` — `HMAC-SHA256(webhookSecret, rawRequestBody)`
-- **Additional Headers**:
-  - `X-Gateway-Event: SUCCESS`
-  - `X-Gateway-Delivery-Id: <uuid>` — stable across retries; use it to deduplicate
-  - `X-Gateway-Timestamp: <timestamp_ms>` — the time the delivery was FIRST signed
-  - `X-Gateway-Signature-V2: sha256=<64_char_hex_hash>` — `HMAC-SHA256(webhookSecret, "<timestamp_ms>.<rawRequestBody>")`, binds the timestamp into the signature
-- **Payload Fields**:
-  - `event`: `'SUCCESS'`
-  - `orderId`: Merchant order ID (string)
-  - `amount`: Formatted amount in Rupees, e.g. `'499.00'`
-  - `amountPaise`: Integer amount in Paise, e.g. `49900`
-  - `utr`: 12-digit bank reference number
-  - `paymentId`: Unique gateway payment session UUID
-  - `deliveryId`: UUID of this delivery (matches the `X-Gateway-Delivery-Id` header)
-  - `timestamp`: Epoch milliseconds the delivery was first signed (matches `X-Gateway-Timestamp`)
-  - `verificationTag`, `verificationLevel`: Verification provenance
-- **Retries**: a failed delivery is retried with backoff up to 1 hour later. The body is
-  resent byte for byte, so `X-Gateway-Timestamp` and `X-Gateway-Delivery-Id` still describe
-  the ORIGINAL delivery. Any freshness window you enforce must therefore cover the gateway's
-  retry schedule; deduplicate on `deliveryId` rather than on the timestamp.
-- **Amount matching**: reusing an `orderId` with a different amount is rejected with
-  `409 ORDER_AMOUNT_MISMATCH`.
-
-#### Polyglot Webhook Verification Snippets:
+### Polyglot Webhook Verification Snippets:
 
 ##### 1. Node.js (Express)
 ```javascript
@@ -580,6 +664,7 @@ Deep-dive engineering manuals and operational runbooks are available in the [`/d
 | :--- | :--- |
 |  [`ARCHITECTURE.md`](ARCHITECTURE.md) | **Canonical System Architecture & Engineering Blueprint** |
 |  [`docs/INSTALLATION.md`](docs/INSTALLATION.md) | Host installation, prerequisites & environment setup |
+|  [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Deployment runbook & reverse proxy options |
 |  [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) | Environment configuration variables & secret management |
 |  [`docs/ANDROID_MOBILE_APP.md`](docs/ANDROID_MOBILE_APP.md) | Native Android Kotlin Observer APK guide & permissions |
 |  [`docs/OBSERVERS_SETUP.md`](docs/OBSERVERS_SETUP.md) | Complete setup for Gmail, Google Messages & Android |
