@@ -45,7 +45,7 @@ describe('Checkout Portal Integration Tests', () => {
     });
 
     test('generateQrSvg creates clean, valid SVG markup', () => {
-      const svg = generateQrSvg('upi://pay?pa=merchant@upi&am=500.00', 240);
+      const svg = generateQrSvg('upi://pay?pa=mr.kumar.614@superyes&am=500.00', 240);
       assert.ok(svg.startsWith('<svg'));
       assert.ok(svg.includes('xmlns="http://www.w3.org/2000/svg"'));
       assert.ok(svg.includes('viewBox="0 0 240 240"'));

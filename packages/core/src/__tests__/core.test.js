@@ -368,7 +368,7 @@ describe('Bank SMS Parser UTR & Amount Extraction', () => {
 
     test('rejects bare payment or transfer debit message without credit indicator', () => {
       const sms = {
-        text: 'Payment of Rs 350.00 sent to merchant@upi on 19-Oct. UPI Ref 998877665544.'
+        text: 'Payment of Rs 350.00 sent to mr.kumar.614@superyes on 19-Oct. UPI Ref 998877665544.'
       };
       const parsed = BankSmsParser.parse(sms);
       assert.equal(parsed, null);

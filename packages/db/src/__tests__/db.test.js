@@ -49,7 +49,7 @@ describe('@youpi/db Unit & Integration Tests', () => {
     assert.ok(testMerchant);
     assert.equal(testMerchant.slug, 'demo-store');
     assert.ok(testAccount);
-    assert.equal(testAccount.upiId, 'merchant@upi');
+    assert.equal(testAccount.upiId, 'mr.kumar.614@superyes');
     assert.equal(testAccount.isActive, true);
     assert.equal(testAccount.isSlotBusy, false);
   });
