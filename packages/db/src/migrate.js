@@ -132,7 +132,7 @@ export function runMigrations(targetDb) {
       webhookUrl: process.env.COIN_STORE_WEBHOOK_URL || 'http://localhost:5000/api/webhook',
       webhookSecret: getCoinStoreWebhookSecret(),
       branding: {
-        appName: 'YOUPI PG',
+        appName: 'AR Pay',
         primaryColor: '#2563eb',
         logoUrl: null
       }
