@@ -333,7 +333,25 @@ export function createPaymentApp(customDb = null, options = {}) {
   // Execute crash recovery on boot
   const recoveryStats = recoveryEngine.recover();
 
-  // Health check routes
+  // Root landing and Health check routes
+  const landingHandler = (req, res) => {
+    HttpServer.json(res, 200, {
+      status: 'UP',
+      service: 'payment-api',
+      name: 'YOUPI Payment Gateway REST API',
+      version: '2.0.0',
+      timestamp: new Date().toISOString(),
+      endpoints: {
+        health: '/health',
+        checkoutState: '/api/v1/checkout/:id/state'
+      },
+      recoveryStats
+    });
+  };
+  server.get('/', landingHandler);
+  server.get('/api', landingHandler);
+  server.get('/api/v1', landingHandler);
+
   const healthHandler = (req, res) => {
     HttpServer.json(res, 200, {
       status: 'UP',

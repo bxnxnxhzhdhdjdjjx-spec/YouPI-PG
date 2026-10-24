@@ -224,8 +224,32 @@ export class ControlCenterServer {
         return;
       }
 
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Control Center Route Not Found');
+      if (req.headers['accept']?.includes('application/json') || pathname.startsWith('/api/')) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Control Center Route Not Found', code: 'NOT_FOUND' }));
+      } else {
+        res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>404 - Control Center</title>
+  <style>
+    body { background: #0d1117; color: #c9d1d9; font-family: system-ui, sans-serif; display: flex; height: 100vh; align-items: center; justify-content: center; margin: 0; }
+    .box { text-align: center; max-width: 420px; padding: 2rem; background: #161b22; border: 1px solid #30363d; border-radius: 12px; }
+    h1 { color: #f85149; margin-top: 0; }
+    a { color: #58a6ff; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>404 Not Found</h1>
+    <p>The requested supervisor endpoint or page was not found.</p>
+    <a href="/">← Return to Control Center Dashboard</a>
+  </div>
+</body>
+</html>`);
+      }
     });
   }
 }

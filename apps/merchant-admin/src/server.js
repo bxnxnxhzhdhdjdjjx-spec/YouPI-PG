@@ -248,8 +248,32 @@ export class AdminServer {
         return;
       }
 
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Admin Route Not Found');
+      if (req.headers['accept']?.includes('application/json') || pathname.startsWith('/api/')) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Admin Route Not Found', code: 'NOT_FOUND' }));
+      } else {
+        res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>404 - Merchant Admin</title>
+  <style>
+    body { background: #0f172a; color: #f8fafc; font-family: system-ui, sans-serif; display: flex; height: 100vh; align-items: center; justify-content: center; margin: 0; }
+    .box { text-align: center; max-width: 420px; padding: 2rem; background: #1e293b; border: 1px solid #334155; border-radius: 12px; }
+    h1 { color: #f43f5e; margin-top: 0; }
+    a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>404 Not Found</h1>
+    <p>The requested admin page or endpoint was not found.</p>
+    <a href="/">← Return to Merchant Admin Panel</a>
+  </div>
+</body>
+</html>`);
+      }
     });
   }
 }
