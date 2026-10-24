@@ -343,11 +343,8 @@ Here is how to set up, configure, and use **YOUPI PG V2** step by step from merc
 To verify payments automatically in real-time without gateway fees:
 
 #### 1. Android Observer APK (`com.youpi.observer`):
-- Locate the APK file at [`apps/android-observer-app/youpi-sms-gateway.apk`](apps/android-observer-app/youpi-sms-gateway.apk).
-- Install the APK on any secondary Android smartphone containing the bank-registered SIM card.
-- Open the app and grant **SMS Listener** and **Notification Access** permissions.
-- In Merchant Admin, navigate to **Observers -> Android Observer** and click **Pair Device**.
-- Scan the displayed QR code with the Android app to complete secure encrypted HMAC pairing.
+- Locate the APK file at [`apps/android-observer-app/youpi-sms-gateway.apk`](apps/android-observer-app/youpi-sms-gateway.apk) or download directly from Merchant Admin at `/youpi-sms-gateway.apk`.
+- See the dedicated [Android Observer APK Setup Guide](#-android-observer-apk-setup-guide-phone-me-download-aur-set-up-kaise-kare) below for step-by-step mobile installation and pairing instructions.
 
 #### 2. Gmail Observer Setup:
 - In Merchant Admin, navigate to **Observers -> Gmail Observer**.
@@ -573,6 +570,41 @@ func youpiWebhookHandler(w http.ResponseWriter, r *http.Request) {
 ```
 
 <br/>
+
+---
+
+## 📱 Android Observer APK Setup Guide (Phone me Download aur Set Up Kaise Kare)
+
+Follow this complete guide in **English & Hindi / Hinglish** to download, install, and pair the Android Observer APK on your mobile phone:
+
+### 1. APK Download Kaise Kare (How to Download APK)
+- **From Merchant Admin Dashboard**: Open the Merchant Admin Panel (`http://YOUR_SERVER_IP:6001` or your public domain) in your phone's browser and click the **📲 Download APK** button.
+- **Direct Download URL**: Access the direct download route from any mobile browser:
+  - `https://pay.yourdomain.com/youpi-sms-gateway.apk` or `http://YOUR_SERVER_IP:6100/youpi-sms-gateway.apk`
+- **From Source Repository**: Transfer [`apps/android-observer-app/youpi-sms-gateway.apk`](apps/android-observer-app/youpi-sms-gateway.apk) directly to your phone via USB, WhatsApp, or Google Drive.
+
+### 2. Mobile Phone me Install / Sideload Kaise Kare (How to Install on Phone)
+1. Tap the downloaded `youpi-sms-gateway.apk` file in your browser downloads or file manager.
+2. **Allow Unknown Apps**: If Android prompts *"For your security, your phone is not allowed to install unknown apps"*:
+   - Tap **Settings** -> Toggle ON **Allow from this source** for Chrome/File Manager.
+3. **Play Protect Warning**: If Google Play Protect shows a warning:
+   - Tap **More details** -> Tap **Install anyway** (this is normal for self-hosted sideloaded research APKs).
+4. Tap **Install** and open **YOUPI Observer**.
+
+### 3. Permissions Grant Kaise Kare (Required Permissions Setup)
+When you open the app for the first time, grant the required permissions:
+- **SMS Permission (`RECEIVE_SMS`)**: Allows the app to read incoming bank transaction SMS.
+- **Notification Access (`NotificationListenerService`)**: Allows reading bank app push credit alerts (Google Pay, PhonePe, Paytm, BHIM, Bank Apps).
+- **Battery Optimization Exemption (Crucial for 24/7 Uptime)**:
+  - Go to Phone **Settings -> Apps -> YOUPI Observer -> Battery / Power Management**.
+  - Change setting from *Optimized / Restricted* to **Unrestricted / No Restrictions / Allow Background Activity**.
+
+### 4. Gateway se Pair Kaise Kare (How to Pair with Gateway)
+1. Open **Merchant Admin Panel** on your laptop/desktop -> Navigate to **Observers -> Android Observer**.
+2. Click **Pair Device** to display the dynamic encrypted **Pairing QR Code**.
+3. Open **YOUPI Observer App** on your phone and tap **Scan Pairing QR**.
+4. Point your phone camera at the QR code on your computer screen.
+5. **Done!** The device status turns **ACTIVE** with an encrypted **HMAC-SHA256** link. All incoming bank SMS alerts will now automatically trigger instant 0% fee payment confirmation!
 
 ---
 
