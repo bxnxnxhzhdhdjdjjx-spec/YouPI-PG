@@ -449,6 +449,59 @@ export class CheckoutServer {
         return;
       }
 
+      // Portal Landing Page: GET /
+      if (pathname === '/' || pathname === '/index.html') {
+        const landingHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YOUPI PG — Checkout Service</title>
+  <style>
+    :root { --bg: #0d1117; --card-bg: #161b22; --border: #30363d; --text: #f0f6fc; --muted: #8b949e; --primary: #2f81f7; --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font); display: flex; min-height: 100vh; align-items: center; justify-content: center; }
+    .container { max-width: 520px; width: 90%; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 32px; box-shadow: 0 12px 32px rgba(0,0,0,0.4); text-align: center; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(46, 160, 67, 0.15); color: #3fb950; border: 1px solid rgba(46, 160, 67, 0.4); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+    .dot { width: 8px; height: 8px; background: #3fb950; border-radius: 50%; display: inline-block; }
+    h1 { font-size: 24px; margin: 0 0 10px; font-weight: 700; }
+    p { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 0 0 24px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; margin-bottom: 24px; }
+    .stat { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
+    .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-val { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 4px; }
+    .actions { display: flex; flex-direction: column; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; transition: all 0.2s; }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: #21262d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge"><span class="dot"></span> Checkout Engine Active</div>
+    <h1>YOUPI PG Checkout Service</h1>
+    <p>This is the official payment checkout portal. Merchant payment links (e.g. <code>/checkout/{id}</code>) are processed securely here.</p>
+    <div class="grid">
+      <div class="stat"><div class="stat-label">Service Status</div><div class="stat-val">Online & Ready</div></div>
+      <div class="stat"><div class="stat-label">Protocol</div><div class="stat-val">UPI ISO Vector Engine</div></div>
+    </div>
+    <div class="actions">
+      <a href="/youpi-sms-gateway.apk" class="btn btn-primary">📲 Download Companion APK</a>
+      <a href="/youpi.js" class="btn btn-secondary">⚡ Integration SDK (youpi.js)</a>
+    </div>
+  </div>
+</body>
+</html>`;
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          ...BASE_SECURITY_HEADERS
+        });
+        res.end(landingHtml);
+        return;
+      }
+
       // Checkout Page: GET /checkout/:id
       const checkoutMatch = pathname.match(/^\/checkout\/([^/]+)$/);
       if (checkoutMatch) {
@@ -469,8 +522,28 @@ export class CheckoutServer {
       }
 
       // Not found
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Checkout Page Not Found');
+      const notFoundHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>404 - Page Not Found</title>
+  <style>
+    body { background: #0d1117; color: #f0f6fc; font-family: system-ui, sans-serif; display: flex; height: 100vh; align-items: center; justify-content: center; margin: 0; }
+    .box { text-align: center; max-width: 400px; padding: 2rem; background: #161b22; border: 1px solid #30363d; border-radius: 12px; }
+    h1 { color: #f85149; margin-top: 0; }
+    a { color: #2f81f7; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>404 Not Found</h1>
+    <p>The checkout page or endpoint you requested does not exist.</p>
+    <a href="/">← Return to Gateway Home</a>
+  </div>
+</body>
+</html>`;
+      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(notFoundHtml);
     });
   }
 }

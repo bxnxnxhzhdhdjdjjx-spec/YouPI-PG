@@ -659,6 +659,73 @@ YOUPI PG confirms payments without expensive commercial banking APIs using a tri
 
 ---
 
+## 🌐 Comprehensive Domain, Subdomain & Page Route Map (Kis Page Par Kya Hosted Hai)
+
+YOUPI PG V2 supports both **Multi-Subdomain Hosting** (e.g. `pay.yourdomain.com`, `admin.yourdomain.com`) and **Single VPS IP / Direct Port Hosting** (e.g. `http://YOUR_VPS_IP:8090`).
+
+### Complete Service & Page Mapping Table:
+
+| Service Name | Port | Recommended Domain | Public Page Routes & URLs | Description |
+| :--- | :---: | :--- | :--- | :--- |
+| **Control Center** | `8090` | `control.yourdomain.com` | `http://YOUR_VPS_IP:8090/`<br/>`http://YOUR_VPS_IP:8090/dashboard` | Supervisor process control dashboard, live SSE log viewer & service restart panel |
+| **Checkout Portal** | `7000` | `pay.yourdomain.com` | `https://pay.yourdomain.com/`<br/>`https://pay.yourdomain.com/checkout/{payment_id}`<br/>`https://pay.yourdomain.com/youpi.js`<br/>`https://pay.yourdomain.com/youpi-sms-gateway.apk` | Customer payment drawer/modal, dynamic vector UPI QR code, integration SDK, and companion Android APK download |
+| **Merchant Admin** | `6001` | `admin.yourdomain.com` | `https://admin.yourdomain.com/`<br/>`https://admin.yourdomain.com/till`<br/>`https://admin.yourdomain.com/youpi-sms-gateway.apk` | Operations dashboard, VPA receiving accounts manager, API keys, branding customizer & POS Till Desk |
+| **Payment REST API** | `6100` | `api.yourdomain.com` | `https://api.yourdomain.com/`<br/>`https://api.yourdomain.com/health`<br/>`https://api.yourdomain.com/api/v1/checkout/{payment_id}/state` | Core payment state engine, WhatsApp OTP gateway, observation poller & webhook dispatch engine |
+| **Showcase Store** | `5000` | `store.yourdomain.com` | `https://store.yourdomain.com/`<br/>`https://store.yourdomain.com/wallet`<br/>`https://store.yourdomain.com/order-success` | Reference merchant storefront with coin wallet ledger and 5 standardized payment outcome pages |
+
+<br/>
+
+### Multi-Domain & Reverse Proxy Setup (Cloudflare Tunnel / Nginx Guide)
+
+If you want to host each service on custom domains or subdomains without port numbers:
+
+#### 1. Cloudflare Tunnel Configuration (`config.yml`):
+```yaml
+ingress:
+  - hostname: pay.yourdomain.com
+    service: http://localhost:7000
+  - hostname: admin.yourdomain.com
+    service: http://localhost:6001
+  - hostname: api.yourdomain.com
+    service: http://localhost:6100
+  - hostname: control.yourdomain.com
+    service: http://localhost:8090
+  - hostname: store.yourdomain.com
+    service: http://localhost:5000
+  - service: http_status:404
+```
+
+#### 2. Nginx Reverse Proxy Configuration (`/etc/nginx/sites-available/youpi.conf`):
+```nginx
+# Checkout Portal (pay.yourdomain.com)
+server {
+    listen 80;
+    server_name pay.yourdomain.com;
+    location / {
+        proxy_pass http://127.0.0.1:7000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Control Center Supervisor (control.yourdomain.com or http://YOUR_VPS_IP:8090)
+server {
+    listen 80;
+    server_name control.yourdomain.com;
+    location / {
+        proxy_pass http://127.0.0.1:8090;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+<br/>
+
+---
+
 ##  Port Topology & Microservices Map
 
 | Service | Port | Directory | Entrypoint | Responsibility |
