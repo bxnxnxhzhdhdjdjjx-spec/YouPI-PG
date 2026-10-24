@@ -336,6 +336,35 @@ export class CheckoutServer {
         return;
       }
 
+      // Download Android Companion APK
+      if (pathname === '/youpi-sms-gateway.apk' || pathname === '/download-apk') {
+        const apkCandidates = [
+          path.resolve(__dirname, '../public/youpi-sms-gateway.apk'),
+          path.resolve(__dirname, '../../payment-api/public/youpi-sms-gateway.apk'),
+          path.resolve(__dirname, '../../merchant-admin/public/youpi-sms-gateway.apk'),
+          path.resolve(__dirname, '../../android-observer-app/youpi-sms-gateway.apk')
+        ];
+        let apkPath = null;
+        for (const p of apkCandidates) {
+          if (fs.existsSync(p)) {
+            apkPath = p;
+            break;
+          }
+        }
+        if (apkPath) {
+          const stat = fs.statSync(apkPath);
+          res.writeHead(200, {
+            'Content-Type': 'application/vnd.android.package-archive',
+            'Content-Disposition': 'attachment; filename="youpi-sms-gateway.apk"',
+            'Content-Length': stat.size,
+            'Access-Control-Allow-Origin': '*'
+          });
+          const stream = fs.createReadStream(apkPath);
+          stream.pipe(res);
+          return;
+        }
+      }
+
       // Official SDK script: GET /youpi.js or /sdk/youpi-checkout.js
       if (pathname === '/youpi.js' || pathname === '/sdk/youpi.js' || pathname === '/sdk/youpi-checkout.js') {
         try {
