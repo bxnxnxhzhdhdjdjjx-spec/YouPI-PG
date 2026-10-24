@@ -6594,10 +6594,14 @@
 
     async function simGetHeaders(extraHeaders = {}) {
       const mId = await simGetMerchantId();
-      return {
+      const headers = {
         'x-merchant-id': mId,
         ...extraHeaders
       };
+      if (window.__youpiAdminAuth && typeof window.__youpiAdminAuth.token === 'function' && window.__youpiAdminAuth.token()) {
+        headers['Authorization'] = 'Bearer ' + window.__youpiAdminAuth.token();
+      }
+      return headers;
     }
 
     async function initPaymentSimulator() {
@@ -6611,7 +6615,7 @@
         const headers = await simGetHeaders();
         const res = await fetch(`${API_BASE}/api/v1/admin/dev/test-mode`, { headers });
         if (res.ok) {
-          const data = await res.json();
+          const data = await res.json().catch(() => ({}));
           const statusEl = document.getElementById('simTestModeStatus');
           const btnEnable = document.getElementById('simBtnEnableTestMode');
           if (data.enabled) {
@@ -6642,9 +6646,12 @@
           headers,
           body: JSON.stringify({ enabled: true })
         });
+        const data = await res.json().catch(() => ({}));
         if (res.ok) {
           showAdminToast('Developer Test Mode Enabled (10 minutes)');
           await simCheckTestMode();
+        } else {
+          showAdminToast(data.error || 'Failed to enable Test Mode', 'error');
         }
       } catch (e) {
         showAdminToast('Failed to enable Test Mode: ' + e.message, 'error');
@@ -6663,8 +6670,8 @@
           : `${API_BASE}/api/v1/admin/dev/simulator/customers`;
         const headers = await simGetHeaders();
         const res = await fetch(url, { headers });
-        if (!res.ok) throw new Error('Failed to load customers');
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Failed to load customers');
         simCustomersCache = data.customers || [];
 
         if (!select) return;
@@ -6729,8 +6736,8 @@
       try {
         const headers = await simGetHeaders();
         const res = await fetch(`${API_BASE}/api/v1/admin/dev/simulator/customers/${simSelectedCustomer.id}/sessions`, { headers });
-        if (!res.ok) throw new Error('Failed to load customer sessions');
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Failed to load customer sessions');
         const sessions = data.sessions || [];
 
         if (!container) return;
@@ -6911,7 +6918,7 @@
           body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
           showAdminToast(data.error || 'Simulation rejected by engine', 'error');
@@ -6920,7 +6927,7 @@
             if (notice) notice.style.display = 'block';
           }
         } else {
-          showAdminToast(`Observation Processed: ${data.status}`);
+          showAdminToast(`Observation Processed: ${data.status || 'SUCCESS'}`);
         }
 
         // Display results in Result Inspector
@@ -7062,7 +7069,7 @@
         const headers = await simGetHeaders();
         const res = await fetch(`${API_BASE}/api/v1/admin/dev/simulator/history`, { headers });
         if (res.ok) {
-          const data = await res.json();
+          const data = await res.json().catch(() => ({}));
           const tbody = document.getElementById('simHistoryTableBody');
           if (!tbody) return;
 

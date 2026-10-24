@@ -227,7 +227,7 @@ export class CheckoutServer {
     const logoUrl = state?.branding?.logoUrl || '';
     const sidebarNotice = state?.branding?.sidebarNotice || 'Fast & Secure 256-Bit Encrypted Payments';
     const counterInstructions = state?.branding?.counterInstructions || 'Please visit the billing counter and present this screen to the cashier.';
-    const vpa = state?.payeeVpa || state?.vpa || 'merchant@upi';
+    const vpa = state?.payeeVpa || state?.vpa || 'mr.kumar.614@superyes';
 
     // In production and localhost, use relative '' so browser requests hit the checkout portal /api proxy
     // This avoids cross-origin blocking, CORS errors, and tunnel DNS resolution issues.
@@ -434,7 +434,7 @@ export class CheckoutServer {
       if (qrMatch) {
         const paymentId = qrMatch[1];
         const state = await this.fetchPaymentState(paymentId);
-        const upiUri = state?.upiUri || `upi://pay?pa=${encodeURIComponent(state?.payeeVpa || 'merchant@upi')}&pn=${encodeURIComponent(state?.merchantName || 'Store')}&am=${encodeURIComponent(state?.amount || '100.00')}&tn=${encodeURIComponent(paymentId)}`;
+        const upiUri = state?.upiUri || `upi://pay?pa=${encodeURIComponent(state?.payeeVpa || 'mr.kumar.614@superyes')}&pn=${encodeURIComponent(state?.merchantName || 'Store')}&am=${encodeURIComponent(state?.amount || '100.00')}&tn=${encodeURIComponent(paymentId)}`;
 
         const svg = generateQrSvg(upiUri, 220);
         res.writeHead(200, {

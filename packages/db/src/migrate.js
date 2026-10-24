@@ -158,7 +158,7 @@ export function runMigrations(targetDb) {
     accountRepo.create({
       id: '00000000-0000-0000-0000-000000000002',
       merchantId: defaultMerchant.id,
-      upiId: 'merchant@upi',
+      upiId: 'mr.kumar.614@superyes',
       payeeName: defaultMerchant.businessName,
       isActive: true
     });
